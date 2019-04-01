@@ -7,11 +7,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bayanav.mariobros.manager.GameManager;
 
-public class Hub {
+public class Hub implements Disposable {
     /**
      * we are doing this because when our game world moves we want the head to stay the same so we are going to use
     a new camera and new viewPort specifically for our Hub so its stays locked there and only render that part of the screen
@@ -70,5 +71,10 @@ public class Hub {
         table.add(countdownLabel).expandX();
 
         stage.addActor(table);//adding the table to the stage
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
     }
 }

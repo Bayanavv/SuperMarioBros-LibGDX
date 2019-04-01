@@ -27,6 +27,7 @@ import com.bayanav.mariobros.MarioBros;
 import com.bayanav.mariobros.actors.Mario;
 import com.bayanav.mariobros.hub.Hub;
 import com.bayanav.mariobros.manager.GameManager;
+import com.bayanav.mariobros.utils.WorldCreator;
 
 public class PlayScreen implements Screen {
     private MarioBros game;
@@ -44,90 +45,43 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;//gives us a graphical representation of our fixtures and bodies inside of our box2d world
 
+
+    //Constructor:
     public PlayScreen(MarioBros game) {
         this.game = game;
+    }
 
-        //create cam used to follow mario through cam world
-        gameCam = new OrthographicCamera();
+    @Override
+    public void show() {
+        gameCam = new OrthographicCamera();//create cam used to follow mario through cam world
 
-        //create FitViewport to maintain virtual aspect ratio despite
-        gamePort = new FitViewport(GameManager.V_WIDTH,GameManager.V_HEIGHT,gameCam);
 
-        //create our game HUB for scores/timers/level info
-        hub = new Hub(game.batch);
+        gamePort = new FitViewport(GameManager.V_WIDTH,GameManager.V_HEIGHT);//);//create FitViewport to maintain virtual aspect ratio despite
+        gamePort.setCamera(gameCam);
+
+        gameCam.position.set(gamePort.getWorldWidth() / GameManager.PPM,gamePort.getWorldHeight() / GameManager.PPM,0);//initially set our gamCam to be centered correctly at the start of of
+
+        world = new World(GameManager.GRAVITY, true);
+
+        hub = new Hub(game.batch);//create our game HUB for scores/timers/level info
 
         //lead our map and setup our map renderer
         maploader = new TmxMapLoader();
         map = maploader.load("maps/level1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
 
-        //initially set our gamCam to be centered correctly at the start of of
-        gameCam.position.set(gamePort.getWorldWidth() / GameManager.PPM,gamePort.getWorldHeight() / GameManager.PPM,0);
 
-        world = new World(new Vector2(0,-10 ), true);//no gravity for now we change it in the feature, second parameter is do we want to sleep object that are at rest
+
         //box2d doesn't calculate inside its physics simulation bodies they are at rest so is save some time when it's doing those calculations , you can always wake up an object by commanding it to do any activity
         b2dr = new Box2DDebugRenderer();
 
+        new WorldCreator(world, map);
+
         player = new Mario(world);
 
-        BodyDef bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();//need have before you can create a fixture likewise you need to define that fixture first and then add it to the body
-        Body body;
-
-        //create ground bodies/ fixtures
-        for (MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / GameManager.PPM, (rect.getY() + rect.getHeight() / 2) / GameManager.PPM);
-
-            body = world.createBody(bdef);
-
-            shape.setAsBox(rect.getWidth() / 2 / GameManager.PPM,rect.getHeight() / 2 / GameManager.PPM);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-
-
-        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / GameManager.PPM, (rect.getY() + rect.getHeight() / 2) / GameManager.PPM);
-            body = world.createBody(bdef);
-            shape.setAsBox(rect.getWidth() / 2 / GameManager.PPM,rect.getHeight() / 2 / GameManager.PPM);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-
-        for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / GameManager.PPM, (rect.getY() + rect.getHeight() / 2) / GameManager.PPM);
-            body = world.createBody(bdef);
-            shape.setAsBox(rect.getWidth() / 2 / GameManager.PPM,rect.getHeight() / 2 / GameManager.PPM);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-
-        for (MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / GameManager.PPM, (rect.getY() + rect.getHeight() / 2) / GameManager.PPM);
-            body = world.createBody(bdef);
-            shape.setAsBox(rect.getWidth() / 2 / GameManager.PPM,rect.getHeight() / 2 / GameManager.PPM);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-
-
     }
 
-    @Override
-    public void show() {
-
-    }
-
+    //the key moving of Mario
     public void handleInput(float dt){
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
             player.b2body.applyLinearImpulse(new Vector2(0,4f),player.b2body.getWorldCenter(),true);
@@ -136,15 +90,17 @@ public class PlayScreen implements Screen {
             player.b2body.applyLinearImpulse(new Vector2(0.1f,0), player.b2body.getWorldCenter(), true);
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2)
-            player.b2body.applyLinearImpulse(new Vector2(0.1f,0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(-0.1f,0), player.b2body.getWorldCenter(), true);
 
     }
 
     public void update(float dt){
+        //handle user input first
         handleInput(dt);
 
         gameCam.position.x = player.b2body.getPosition().x;
 
+        //takes 1 step in the physics simulation (60 times per second)
         world.step(1/60f,6,2);
         gameCam.update();
 
@@ -206,6 +162,10 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hub.dispose();
     }
 }
