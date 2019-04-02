@@ -1,14 +1,11 @@
 package com.bayanav.mariobros.actors;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bayanav.mariobros.screens.PlayScreen;
 
-public class RigidBody extends Sprite {
+public abstract class RigidBody extends Sprite {
     protected PlayScreen playScreen;
     protected World world;
     protected Body body;
@@ -19,19 +16,34 @@ public class RigidBody extends Sprite {
     public RigidBody(PlayScreen playScreen, float x, float y){
         this.playScreen = playScreen;
         this.world = playScreen.world;
+
+        toBeDestroyed = false;
+        destroyed = false;
+
+        setPosition(x, y);
         defBody();
     }
 
 
-    protected void defBody() {
-
-    }
+    protected abstract void defBody();
 
     public void update(float delta) {
 
     }
 
+    public void onCollide(Collider other) {
 
+    }
+
+    public void onTrigger(Collider other) {
+
+    }
+
+    public void queueDestroy() {
+        toBeDestroyed = true;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
 }
-
-

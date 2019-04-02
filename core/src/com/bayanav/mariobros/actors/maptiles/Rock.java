@@ -8,8 +8,9 @@ import com.bayanav.mariobros.manager.GameManager;
 import com.bayanav.mariobros.screens.PlayScreen;
 
 public class Rock extends InteractiveTileObject{
+
     public Rock(PlayScreen playScreen, float x, float y, TiledMapTileMapObject mapObject){
-        super(playScreen, x, y, mapObject);
+        super(playScreen, x, y,mapObject);
     }
 
     @Override

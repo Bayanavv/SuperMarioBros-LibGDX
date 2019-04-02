@@ -42,6 +42,28 @@ public class GameManager implements Disposable {
 
     public static float timeScale = 1;
 
+
+    //Constructor:
+    public GameManager(){
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Override
     public void dispose() {
 

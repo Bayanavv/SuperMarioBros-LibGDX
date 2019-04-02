@@ -75,7 +75,8 @@ public class PlayScreen implements Screen {
         //box2d doesn't calculate inside its physics simulation bodies they are at rest so is save some time when it's doing those calculations , you can always wake up an object by commanding it to do any activity
         b2dr = new Box2DDebugRenderer();
 
-        new WorldCreator(world, map);
+
+
 
         player = new Mario(world);
 

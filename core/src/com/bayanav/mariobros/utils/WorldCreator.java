@@ -32,6 +32,9 @@ public class WorldCreator {
 
     public WorldCreator(PlayScreen playScreen, TiledMap map) {
 
+        flagPosition = new Vector2();
+        startPosition = new Vector2(64.0f, 64.0f);
+
         mapTileObjects = new Array<InteractiveTileObject>();
         enemies = new Array<Enemy>();
 
@@ -40,6 +43,10 @@ public class WorldCreator {
             for (MapObject mapObject : mapLayer.getObjects()) {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
+
+
+/*                float x = ((TiledMapTileMapObject) mapObject).getX();
+                float y = ((TiledMapTileMapObject) mapObject).getY();*/
 
                 mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
             }
@@ -115,7 +122,6 @@ public class WorldCreator {
             }
         }
 
-        flagPosition = new Vector2();
 
         mapLayer = map.getLayers().get("Flag");
         if (mapLayer != null) {
@@ -128,7 +134,7 @@ public class WorldCreator {
         }
 
 
-        startPosition = new Vector2(64.0f, 64.0f);
+
 
         mapLayer = map.getLayers().get("Start");
         if (mapLayer != null) {
