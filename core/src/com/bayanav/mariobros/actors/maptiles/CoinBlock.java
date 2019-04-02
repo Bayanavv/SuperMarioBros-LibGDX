@@ -11,6 +11,7 @@ import com.bayanav.mariobros.manager.GameManager;
 public class CoinBlock extends InteractiveTileObject {
     public CoinBlock(World world, TiledMap map, Rectangle bounds) {
         super(world, map, bounds);
+
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();

@@ -13,7 +13,7 @@ public class GameManager implements Disposable {
 
     public static final int WINDOW_WIDTH = Gdx.graphics.getWidth();
     public static final int WINDOW_HEIGHT = Gdx.graphics.getHeight();
-    
+
     //these will be our virtual width and height
     public static final float V_WIDTH = 20.0f;
     public static final float V_HEIGHT = 15.0f;

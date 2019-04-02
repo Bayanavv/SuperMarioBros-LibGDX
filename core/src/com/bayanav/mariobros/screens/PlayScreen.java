@@ -42,7 +42,7 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
 
     //Box2D variables
-    private World world;
+    public World world;
     private Box2DDebugRenderer b2dr;//gives us a graphical representation of our fixtures and bodies inside of our box2d world
 
 
