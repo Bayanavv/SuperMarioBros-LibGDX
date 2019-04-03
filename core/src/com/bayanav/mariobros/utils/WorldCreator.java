@@ -44,10 +44,6 @@ public class WorldCreator {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
 
-
-/*                float x = ((TiledMapTileMapObject) mapObject).getX();
-                float y = ((TiledMapTileMapObject) mapObject).getY();*/
-
                 mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
             }
         }

@@ -7,27 +7,20 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bayanav.mariobros.manager.GameManager;
+import com.bayanav.mariobros.screens.PlayScreen;
 
-public class Mario extends Sprite {
+public class Mario extends RigidBody {
     public World world;
     public Body b2body;
 
-    public Mario(World world){
-        this.world = world;
-        defineMario();
+    public Mario(PlayScreen playScreen, float x, float y){
+       super(playScreen, x,y);
     }
 
-    public void defineMario(){
-        BodyDef bdef = new BodyDef();
-        bdef.position.set(32 / GameManager.PPM ,32 / GameManager.PPM);
-        bdef.type = BodyDef.BodyType.DynamicBody;
-        b2body = world.createBody(bdef);
+    @Override
+    protected void defBody() {
 
-        FixtureDef fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(5 / GameManager.PPM);
-
-        fdef.shape = shape;
-        b2body.createFixture(fdef);
     }
+
+
 }

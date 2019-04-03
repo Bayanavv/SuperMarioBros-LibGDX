@@ -73,6 +73,16 @@ public class Hub implements Disposable {
         stage.addActor(table);//adding the table to the stage
     }
 
+    public void setLevel(String level) {
+        levelLabel.setText(level);
+    }
+
+    public void draw() {
+        scoreLabel.setText(intToString(GameManager.instance.getScore(), 6));
+        stage.draw();
+
+    }
+
     @Override
     public void dispose() {
         stage.dispose();

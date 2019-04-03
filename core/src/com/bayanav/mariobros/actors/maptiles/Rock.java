@@ -22,7 +22,7 @@ public class Rock extends InteractiveTileObject{
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(16 / GameManager.PPM / 2, 16 / GameManager.PPM / 2);
+        shape.setAsBox(16 / 2 / GameManager.PPM , 16 / 2/ GameManager.PPM);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.filter.categoryBits = GameManager.GROUND_BIT;
