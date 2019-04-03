@@ -122,7 +122,7 @@ public class PlayScreen implements Screen {
 
         // create Box2D world
         world = new World(GameManager.GRAVITY, true);
-        world.setContactListener(new );
+        world.setContactListener(new );//**************************************************************************************************************************************************************************************
         //world.setContactListener(new WorldContactListener());
 
         // load tmx tiled map
@@ -288,9 +288,9 @@ public class PlayScreen implements Screen {
         }
 
         // Press F to toggle show FPS
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+        /**if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             hub.setShowFPS(!hub.isShowFPS());
-        }
+        }*/
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT_BRACKET)) {
             float timeScale = GameManager.timeScale;
@@ -313,12 +313,12 @@ public class PlayScreen implements Screen {
         float step = GameManager.STEP * GameManager.timeScale;
 
         handleInput();
-        handleSpawningItem();
-        handleSpawningEffect();
-        handleSpawningFireball();
-        handleMusic();
+        //handleSpawningItem();
+        //handleSpawningEffect();
+        //handleSpawningFireball();
+        //handleMusic();
 
-        if (hud.getTimeLeft() == 0) {
+        if (hub.getTimeLeft() == 0) {
             mario.suddenDeath();
         }
 
@@ -376,7 +376,7 @@ public class PlayScreen implements Screen {
         scoreIndicator.update(delta);
 
         // update HUD
-        hud.update(delta);
+        hub.update(delta);
 
         // update levelCompletedStage
         if (levelCompleted) {
@@ -398,7 +398,7 @@ public class PlayScreen implements Screen {
         }
     }
 
-    public void handleMusic() {
+    /**public void handleMusic() {
         if (!playMusic) {
             return;
         }
@@ -437,7 +437,7 @@ public class PlayScreen implements Screen {
                 GameManager.instance.playMusic("mario_music.ogg");
             }
         }
-    }
+    }*/
 
     private void cleanUpDestroyedObjects() {
         /*
@@ -491,24 +491,24 @@ public class PlayScreen implements Screen {
         }
 
         // draw effects
-        for (Effect effect : effects) {
+        /**for (Effect effect : effects) {
             effect.draw(game.batch);
-        }
+        }*/
 
         // draw items
-        for (Item item : items) {
+        /**for (Item item : items) {
             item.draw(game.batch);
-        }
+        }*/
 
         // draw enemies
-        for (Enemy enemy : enemies) {
+        /**for (Enemy enemy : enemies) {
             enemy.draw(game.batch);
-        }
+        }*/
 
         // draw fireballs
-        for (Fireball fireball : fireballs) {
+        /**for (Fireball fireball : fireballs) {
             fireball.draw(game.batch);
-        }
+        }*/
 
         // draw Mario
         mario.draw(game.batch);

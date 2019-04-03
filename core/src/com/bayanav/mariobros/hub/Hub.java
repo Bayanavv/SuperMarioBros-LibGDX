@@ -83,6 +83,18 @@ public class Hub implements Disposable {
 
     }
 
+    private String intToString(int value, int length) {
+        String valueStr = Integer.toString(value);
+        StringBuilder result = new StringBuilder();
+        if (valueStr.length() < length) {
+            for (int i = 0; i < length - valueStr.length(); i++) {
+                result.append(0);
+            }
+        }
+        result.append(valueStr);
+        return result.toString();
+    }
+
     @Override
     public void dispose() {
         stage.dispose();
