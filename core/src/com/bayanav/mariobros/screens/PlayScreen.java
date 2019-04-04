@@ -49,6 +49,7 @@ import com.bayanav.mariobros.actors.weapons.SpawningFireball;
 import com.bayanav.mariobros.hub.Hub;
 import com.bayanav.mariobros.hub.ScoreIndicator;
 import com.bayanav.mariobros.manager.GameManager;
+import com.bayanav.mariobros.utils.WorldContactListener;
 import com.bayanav.mariobros.utils.WorldCreator;
 
 import java.util.LinkedList;
@@ -122,7 +123,7 @@ public class PlayScreen implements Screen {
 
         // create Box2D world
         world = new World(GameManager.GRAVITY, true);
-        world.setContactListener(new );//**************************************************************************************************************************************************************************************
+        world.setContactListener(new WorldContactListener());
         //world.setContactListener(new WorldContactListener());
 
         // load tmx tiled map
@@ -270,7 +271,7 @@ public class PlayScreen implements Screen {
     }*/
 
     //the key moving of Mario
-    public void handleInput(float dt){
+    public void handleInput(){
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             if (GameManager.instance.isPlayingMusic()) {
                 GameManager.instance.pauseMusic();
@@ -318,9 +319,9 @@ public class PlayScreen implements Screen {
         //handleSpawningFireball();
         //handleMusic();
 
-        if (hub.getTimeLeft() == 0) {
+        /**if (hub.getTimeLeft() == 0) {
             mario.suddenDeath();
-        }
+        }*/
 
         // Box2D world step
         accumulator += delta;
@@ -330,38 +331,38 @@ public class PlayScreen implements Screen {
         }
 
         // update map tile objects
-        for (MapTileObject mapTileObject : mapTileObjects) {
+        for (InteractiveTileObject mapTileObject : mapTileObjects) {
             mapTileObject.update(delta);
         }
 
         // update enemies
-        for (Enemy enemy : enemies) {
+        /**for (Enemy enemy : enemies) {
             enemy.update(delta);
-        }
+        }*/
 
         // update items
-        for (Item item : items) {
+        /**for (Item item : items) {
             item.update(delta);
-        }
+        }*/
 
         // update effects
-        for (Effect effect : effects) {
+        /**for (Effect effect : effects) {
             effect.update(delta);
-        }
+        }*/
 
         // update fireballs
-        for (Fireball fireball : fireballs) {
+        /**for (Fireball fireball : fireballs) {
             fireball.update(delta);
-        }
+        }*/
 
         // update Mario
         mario.update(delta);
 
         // camera control
         float targetX = camera.position.x;
-        if (!mario.isDead()) {
+        /**if (!mario.isDead()) {
             targetX = MathUtils.clamp(mario.getPosition().x, cameraLeftLimit, cameraRightLimit);
-        }
+        }*/
 
         camera.position.x = MathUtils.lerp(camera.position.x, targetX, 0.1f);
         if (Math.abs(camera.position.x - targetX) < 0.1f) {
@@ -383,11 +384,11 @@ public class PlayScreen implements Screen {
             levelCompletedStage.act(delta);
         }
 
-        cleanUpDestroyedObjects();
+        //cleanUpDestroyedObjects();
 
 
         // check if Mario is dead
-        if (mario.isDead()) {
+        /**if (mario.isDead()) {
             countDown -= delta;
 
             if (countDown < 0) {
@@ -395,7 +396,7 @@ public class PlayScreen implements Screen {
                 game.setScreen(new GameOverScreen(game));
                 dispose();
             }
-        }
+        }*/
     }
 
     /**public void handleMusic() {
@@ -439,14 +440,14 @@ public class PlayScreen implements Screen {
         }
     }*/
 
-    private void cleanUpDestroyedObjects() {
-        /*
+    /**private void cleanUpDestroyedObjects() {
+
         for (int i = 0; i < mapTileObjects.size; i++) {
             if (mapTileObjects.get(i).isDestroyed()) {
                 mapTileObjects.removeIndex(i);
             }
         }
-        */
+
 
         for (int i = 0; i < items.size; i++) {
             if (items.get(i).isDestroyed()) {
@@ -465,11 +466,11 @@ public class PlayScreen implements Screen {
                 fireballs.removeIndex(i);
             }
         }
-    }
+    }*/
 
-    public Vector2 getMarioPosition() {
+    /**public Vector2 getMarioPosition() {
         return mario.getPosition();
-    }
+    }*/
 
     @Override
     public void render(float delta) {
@@ -511,16 +512,17 @@ public class PlayScreen implements Screen {
         }*/
 
         // draw Mario
-        mario.draw(game.batch);
+        //mario.draw(game.batch);
 
         game.batch.end();
 
         // draw levelCompletedStage
-        levelCompletedStage.draw();
+        //evelCompletedStage.draw();
 
 
         // draw HUD
         hub.draw();
+
 
         if (renderB2DDebug) {
             box2DDebugRenderer.render(world, camera.combined);

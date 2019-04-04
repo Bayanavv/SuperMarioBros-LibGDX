@@ -95,6 +95,10 @@ public class Hub implements Disposable {
         return result.toString();
     }
 
+    public void update(float delta){
+
+    }
+
     @Override
     public void dispose() {
         stage.dispose();
