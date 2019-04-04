@@ -14,9 +14,13 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.bayanav.mariobros.actors.enemies.Enemy;
+import com.bayanav.mariobros.actors.enemies.Goomba;
+import com.bayanav.mariobros.actors.enemies.Koopa;
 import com.bayanav.mariobros.actors.maptiles.Brick;
 import com.bayanav.mariobros.actors.maptiles.CoinBlock;
+import com.bayanav.mariobros.actors.maptiles.Flagpole;
 import com.bayanav.mariobros.actors.maptiles.InteractiveTileObject;
+import com.bayanav.mariobros.actors.maptiles.Pipe;
 import com.bayanav.mariobros.actors.maptiles.Rock;
 import com.bayanav.mariobros.manager.GameManager;
 import com.bayanav.mariobros.screens.PlayScreen;
@@ -54,7 +58,7 @@ public class WorldCreator {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
 
-                mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
+                mapTileObjects.add(new Pipe(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
             }
         }
 
@@ -64,7 +68,7 @@ public class WorldCreator {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
 
-                mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
+                mapTileObjects.add(new Pipe(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
             }
         }
 
@@ -74,7 +78,7 @@ public class WorldCreator {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
 
-                mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
+                mapTileObjects.add(new Brick(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
             }
         }
 
@@ -84,7 +88,7 @@ public class WorldCreator {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
 
-                mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
+                mapTileObjects.add(new CoinBlock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
             }
         }
 
@@ -94,7 +98,7 @@ public class WorldCreator {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
 
-                mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
+                enemies.add(new Goomba(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM));
             }
         }
 
@@ -104,7 +108,7 @@ public class WorldCreator {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
 
-                mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
+                enemies.add(new Koopa(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM));
             }
         }
 
@@ -114,31 +118,33 @@ public class WorldCreator {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
 
-                mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
+                mapTileObjects.add(new Flagpole(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
             }
         }
 
+
+        flagPosition = new Vector2();
 
         mapLayer = map.getLayers().get("Flag");
         if (mapLayer != null) {
-            for (MapObject mapObject : mapLayer.getObjects()) {
-                float x = ((TiledMapTileMapObject) mapObject).getX();
-                float y = ((TiledMapTileMapObject) mapObject).getY();
+            if (mapLayer.getObjects().getCount() > 0) {
+                float x = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getX();
+                float y = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getY();
 
-                mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
+                flagPosition = new Vector2(x, y);
             }
         }
 
 
-
+        startPosition = new Vector2(64.0f, 64.0f);
 
         mapLayer = map.getLayers().get("Start");
         if (mapLayer != null) {
             for (MapObject mapObject : mapLayer.getObjects()) {
-                float x = ((TiledMapTileMapObject) mapObject).getX();
-                float y = ((TiledMapTileMapObject) mapObject).getY();
+                float x = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getX();
+                float y = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getY();
 
-                mapTileObjects.add(new Rock(playScreen, (x + 8) / GameManager.PPM, (y + 8) / GameManager.PPM, (TiledMapTileMapObject) mapObject));
+
             }
         }
     }

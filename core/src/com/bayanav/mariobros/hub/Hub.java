@@ -1,85 +1,186 @@
 package com.bayanav.mariobros.hub;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bayanav.mariobros.manager.GameManager;
 
 public class Hub implements Disposable {
-    /**
-     * we are doing this because when our game world moves we want the head to stay the same so we are going to use
-    a new camera and new viewPort specifically for our Hub so its stays locked there and only render that part of the screen
-    and then the world can move around independently on its own
 
-    stage: stage is basically an empty box, if we just tried to put widgets in there they fall they wouldn't
-     have any kind of organization so in order to provide some sort of organization we are going to create a table
-     inside of our stage then we can lay out that table in a way to organize our lables in a certain position inside
-     of our stage
-     */
-    public Stage stage;
-    private Viewport viewport;
+    class CoinHUD extends Actor {
 
-    private Integer worldTimer;
-    private float timeCount;
-    private Integer score;
+        private Animation anim;
+        private float stateTime;
 
-    //creating "widgets" which seen 2D called label
-    Label countdownLabel;
-    Label scoreLabel;
-    Label timeLabel;
-    Label levelLabel;
-    Label worldLabel;
-    Label marioLabel;
+        public CoinHUD(TextureAtlas textureAtlas) {
 
-    //Constructor:
-    public Hub(SpriteBatch sb){
-        worldTimer = 300;
-        timeCount = 0;
-        score = 0;
-        viewport = new FitViewport(GameManager.V_WIDTH,GameManager.V_HEIGHT,new OrthographicCamera());
-        stage = new Stage(viewport, sb);
+            Array<TextureRegion> keyFrames = new Array<TextureRegion>();
+            for (int i = 0; i < 3; i++) {
+                keyFrames.add(new TextureRegion(textureAtlas.findRegion("CoinHUD"), i * 8, 0, 8, 8));
+            }
+            anim = new Animation<TextureRegion>(0.3f, keyFrames);
 
-        Table table = new Table();//calling table
+            setSize(16, 16);
+            stateTime = 0;
+        }
 
-        //defaulting: line in the center top and width and height so right in the center of your stage.
-        table.top();//now it will put it in the top of our stage.
-        table.setFillParent(true);//now our table is the size of our stage.
+        @Override
+        protected void positionChanged() {
+            super.positionChanged();
 
-        countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        levelLabel = new Label("1-1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        worldLabel = new Label("WORLD", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        marioLabel = new Label("MARIO", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        }
 
-        //adding the labels to the table.
+        @Override
+        public void draw(Batch batch, float parentAlpha) {
+            batch.draw((TextureRegion) anim.getKeyFrame(stateTime, true), getX(), getY());
+        }
 
-        //expandX(). expend table length of our screen, but if we have multiple things in a single row they all share an equal portion of screen
-        table.add(marioLabel).expandX().padTop(10);
-        table.add(worldLabel).expandX().padTop(10);
-        table.add(timeLabel).expandX().padTop(10);
-        table.row();//going a row line down ending the privies and going down...
+        @Override
+        public void act(float delta) {
+            stateTime += delta;
+        }
+    }
+
+
+    private Stage stage;
+
+    private int timeLeft;
+
+    private Label scoreLabel;
+    private Label timeLabel;
+    private Label levelLabel;
+
+    private Label coinCountLabel;
+
+    private boolean showFPS;
+    private Label fpsLabel;
+
+    private float fpsTimeAccumulator;
+    private float accumulator;
+
+    private BitmapFont font;
+
+    private TextureAtlas textureAtlas;
+
+    public Hub(SpriteBatch batch) {
+
+        Viewport viewport = new FitViewport(GameManager.WINDOW_WIDTH / 1.5f, GameManager.WINDOW_HEIGHT / 1.5f, new OrthographicCamera());
+        stage = new Stage(viewport, batch);
+
+        timeLeft = 300;
+
+        font = new BitmapFont(Gdx.files.internal("fonts/Fixedsys500c.fnt"));
+        Label.LabelStyle style = new Label.LabelStyle(font, Color.WHITE);
+
+        Label scoreTextLabel = new Label("SCORE", style);
+        Label timeTextLabel = new Label("TIME", style);
+        Label levelTextLabel = new Label("WORLD", style);
+
+        scoreLabel = new Label("", style);
+        timeLabel = new Label(intToString(timeLeft, 3), style);
+        levelLabel = new Label("1-1", style);
+
+        textureAtlas = new TextureAtlas("imgs/actors.atlas");
+        CoinHUD coin = new CoinHUD(textureAtlas);
+
+
+        Table table = new Table();
+        table.top();
+        table.setFillParent(true);
+
+        table.add(scoreTextLabel).expandX().padTop(6.0f);
+        table.add();
+        table.add(levelTextLabel).expandX().padTop(6.0f);
+        table.add(timeTextLabel).expandX().padTop(6.0f);
+
+        table.row();
+
         table.add(scoreLabel).expandX();
-        table.add(levelLabel).expandX();
-        table.add(countdownLabel).expandX();
 
-        stage.addActor(table);//adding the table to the stage
+        // coin count
+        Table table1 = new Table();
+        coinCountLabel = new Label("x00", style);
+        table1.add(coin);
+        table1.add(coinCountLabel);
+        table.add(table1).expandX();
+
+        table.add(levelLabel).expandX();
+        table.add(timeLabel).expandX();
+
+        table.row();
+
+        // FPS
+        fpsLabel = new Label("FPS:    ", style);
+        Table fpsTable = new Table();
+        fpsTable.add(fpsLabel);
+        table.add(fpsTable).expand().bottom();
+
+        stage.addActor(table);
+
+        accumulator = 0;
+        fpsTimeAccumulator = 0;
+        showFPS = false;
     }
 
     public void setLevel(String level) {
         levelLabel.setText(level);
     }
 
+    public boolean isShowFPS() {
+        return showFPS;
+    }
+
+    public int getTimeLeft() {
+        return timeLeft;
+    }
+
+    public void setShowFPS(boolean value) {
+        showFPS = value;
+    }
+
     public void draw() {
         scoreLabel.setText(intToString(GameManager.instance.getScore(), 6));
         stage.draw();
+
+    }
+
+    public void update(float delta) {
+        accumulator += delta;
+
+        fpsLabel.setVisible(showFPS);
+
+        if (showFPS) {
+            fpsTimeAccumulator += delta;
+            if (fpsTimeAccumulator > 0.2) {
+                fpsLabel.setText("FPS: " + intToString((int) (1 / delta * GameManager.timeScale), 3));
+                fpsTimeAccumulator = 0;
+            }
+        }
+
+        if (accumulator > 1.0f) {
+            if (timeLeft > 0)
+                timeLeft -= 1;
+            accumulator -= 1.0f;
+            timeLabel.setText(intToString(timeLeft, 3));
+        }
+
+        coinCountLabel.setText("x" + intToString(GameManager.instance.getCoins(), 2));
+
+        stage.act(delta);
 
     }
 
@@ -95,12 +196,10 @@ public class Hub implements Disposable {
         return result.toString();
     }
 
-    public void update(float delta){
-
-    }
-
     @Override
     public void dispose() {
+        font.dispose();
         stage.dispose();
+        textureAtlas.dispose();
     }
 }

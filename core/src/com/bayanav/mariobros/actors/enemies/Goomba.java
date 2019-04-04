@@ -157,7 +157,7 @@ public class Goomba extends Enemy {
                 break;
 
             case DYING:
-                setRegion(walking.getKeyFrame(stateTime, true));
+                setRegion((TextureRegion) walking.getKeyFrame(stateTime, true));
                 setFlip(false, true);
                 if (stateTime > 2.0f) {
                     queueDestroy();
@@ -166,7 +166,7 @@ public class Goomba extends Enemy {
 
             case WALKING:
             default:
-                setRegion(walking.getKeyFrame(stateTime, true));
+                setRegion((TextureRegion) walking.getKeyFrame(stateTime, true));
                 checkMovingDirection();
 
                 float velocityY = body.getLinearVelocity().y;

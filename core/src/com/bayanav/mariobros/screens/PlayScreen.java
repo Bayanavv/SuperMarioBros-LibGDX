@@ -34,7 +34,9 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bayanav.mariobros.MarioBros;
 import com.bayanav.mariobros.actors.Mario;
+import com.bayanav.mariobros.actors.effects.BrickDebris;
 import com.bayanav.mariobros.actors.effects.Effect;
+import com.bayanav.mariobros.actors.effects.FlippingCoin;
 import com.bayanav.mariobros.actors.effects.SpawningEffect;
 import com.bayanav.mariobros.actors.enemies.Enemy;
 import com.bayanav.mariobros.actors.items.Flower;
@@ -172,7 +174,7 @@ public class PlayScreen implements Screen {
         playingHurryMusic = false;
         playMusic = true;
 
-        /** flag and levelCompletedStage
+        // flag and levelCompletedStage
         Flag flag = new Flag(this, (worldCreator.getFlagPosition().x - 9)/ GameManager.PPM, worldCreator.getFlagPosition().y / GameManager.PPM);
         MoveToAction flagSlide = new MoveToAction();
         flagSlide.setPosition((worldCreator.getFlagPosition().x - 9) / GameManager.PPM, 3);
@@ -184,14 +186,12 @@ public class PlayScreen implements Screen {
         setLevelCompletedScreen.setRunnable(new Runnable() {
             @Override
             public void run() {
-                @Override
-                public void run() {
-                    game.setScreen(new GameOverScreen(game));
-                    dispose();
-                }
+                game.setScreen(new GameOverScreen(game));
+                dispose();
             }
+
         });
-        levelCompletedStage.addAction(new SequenceAction(new DelayAction(8.0f), setLevelCompletedScreen));*/
+        levelCompletedStage.addAction(new SequenceAction(new DelayAction(8.0f), setLevelCompletedScreen));
 
     }
 
@@ -221,11 +221,11 @@ public class PlayScreen implements Screen {
         levelCompleted = true;
     }
 
-    /**public void addSpawnItem(float x, float y, Class<? extends Item> type) {
+    public void addSpawnItem(float x, float y, Class<? extends Item> type) {
         itemSpawnQueue.add(new SpawningItem(x, y, type));
-    }*/
+    }
 
-    /**private void handleSpawningItem() {
+    private void handleSpawningItem() {
         if (itemSpawnQueue.size() > 0) {
             SpawningItem spawningItem = itemSpawnQueue.poll();
 
@@ -240,13 +240,13 @@ public class PlayScreen implements Screen {
             }
 
         }
-    }*/
+    }
 
-    /**public void addSpawnEffect(float x, float y, Class<? extends Effect> type) {
+    public void addSpawnEffect(float x, float y, Class<? extends Effect> type) {
         effectSpawnQueue.add(new SpawningEffect(x, y, type));
-    }*/
+    }
 
-    /**public void handleSpawningEffect() {
+    public void handleSpawningEffect() {
         if (effectSpawnQueue.size() > 0) {
             SpawningEffect spawningEffect = effectSpawnQueue.poll();
 
@@ -257,18 +257,18 @@ public class PlayScreen implements Screen {
                 effects.add(new BrickDebris(this, spawningEffect.x, spawningEffect.y));
             }
         }
-    }*/
+    }
 
-    /**public void addSpawnFireball(float x, float y, boolean movingRight) {
+    public void addSpawnFireball(float x, float y, boolean movingRight) {
         fireballSpawnQueue.add(new SpawningFireball(x, y, movingRight));
-    }*/
+    }
 
-    /**public void handleSpawningFireball() {
+    public void handleSpawningFireball() {
         if (fireballSpawnQueue.size() > 0) {
             SpawningFireball spawningFireball = fireballSpawnQueue.poll();
             fireballs.add(new Fireball(this, spawningFireball.x, spawningFireball.y, spawningFireball.movingRight));
         }
-    }*/
+    }
 
     //the key moving of Mario
     public void handleInput(){
@@ -289,9 +289,9 @@ public class PlayScreen implements Screen {
         }
 
         // Press F to toggle show FPS
-        /**if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             hub.setShowFPS(!hub.isShowFPS());
-        }*/
+        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT_BRACKET)) {
             float timeScale = GameManager.timeScale;
@@ -319,9 +319,9 @@ public class PlayScreen implements Screen {
         //handleSpawningFireball();
         //handleMusic();
 
-        /**if (hub.getTimeLeft() == 0) {
+        if (hub.getTimeLeft() == 0) {
             mario.suddenDeath();
-        }*/
+        }
 
         // Box2D world step
         accumulator += delta;
@@ -336,33 +336,33 @@ public class PlayScreen implements Screen {
         }
 
         // update enemies
-        /**for (Enemy enemy : enemies) {
+        for (Enemy enemy : enemies) {
             enemy.update(delta);
-        }*/
+        }
 
         // update items
-        /**for (Item item : items) {
+        for (Item item : items) {
             item.update(delta);
-        }*/
+        }
 
         // update effects
-        /**for (Effect effect : effects) {
+        for (Effect effect : effects) {
             effect.update(delta);
-        }*/
+        }
 
         // update fireballs
-        /**for (Fireball fireball : fireballs) {
+        for (Fireball fireball : fireballs) {
             fireball.update(delta);
-        }*/
+        }
 
         // update Mario
         mario.update(delta);
 
         // camera control
         float targetX = camera.position.x;
-        /**if (!mario.isDead()) {
+        if (!mario.isDead()) {
             targetX = MathUtils.clamp(mario.getPosition().x, cameraLeftLimit, cameraRightLimit);
-        }*/
+        }
 
         camera.position.x = MathUtils.lerp(camera.position.x, targetX, 0.1f);
         if (Math.abs(camera.position.x - targetX) < 0.1f) {
@@ -388,7 +388,7 @@ public class PlayScreen implements Screen {
 
 
         // check if Mario is dead
-        /**if (mario.isDead()) {
+        if (mario.isDead()) {
             countDown -= delta;
 
             if (countDown < 0) {
@@ -396,10 +396,10 @@ public class PlayScreen implements Screen {
                 game.setScreen(new GameOverScreen(game));
                 dispose();
             }
-        }*/
+        }
     }
 
-    /**public void handleMusic() {
+    public void handleMusic() {
         if (!playMusic) {
             return;
         }
@@ -423,7 +423,7 @@ public class PlayScreen implements Screen {
             if (mario.isInvincible()) {
                 GameManager.instance.playMusic("invincible.ogg", true);
             }
-            else if (hud.getTimeLeft() < 60) {
+            else if (hub.getTimeLeft() < 60) {
                 if (!playingHurryMusic) {
                     GameManager.instance.playMusic("out_of_time.ogg", false);
                     playingHurryMusic = true;
@@ -438,9 +438,9 @@ public class PlayScreen implements Screen {
                 GameManager.instance.playMusic("mario_music.ogg");
             }
         }
-    }*/
+    }
 
-    /**private void cleanUpDestroyedObjects() {
+    private void cleanUpDestroyedObjects() {
 
         for (int i = 0; i < mapTileObjects.size; i++) {
             if (mapTileObjects.get(i).isDestroyed()) {
@@ -466,11 +466,11 @@ public class PlayScreen implements Screen {
                 fireballs.removeIndex(i);
             }
         }
-    }*/
+    }
 
-    /**public Vector2 getMarioPosition() {
+    public Vector2 getMarioPosition() {
         return mario.getPosition();
-    }*/
+    }
 
     @Override
     public void render(float delta) {
@@ -492,32 +492,31 @@ public class PlayScreen implements Screen {
         }
 
         // draw effects
-        /**for (Effect effect : effects) {
+        for (Effect effect : effects) {
             effect.draw(game.batch);
-        }*/
+        }
 
         // draw items
-        /**for (Item item : items) {
+        for (Item item : items) {
             item.draw(game.batch);
-        }*/
+        }
 
         // draw enemies
-        /**for (Enemy enemy : enemies) {
+        for (Enemy enemy : enemies)
             enemy.draw(game.batch);
-        }*/
 
         // draw fireballs
-        /**for (Fireball fireball : fireballs) {
+        for (Fireball fireball : fireballs) {
             fireball.draw(game.batch);
-        }*/
+        }
 
-        // draw Mario
-        //mario.draw(game.batch);
+        //draw Mario
+        mario.draw(game.batch);
 
         game.batch.end();
 
         // draw levelCompletedStage
-        //evelCompletedStage.draw();
+        levelCompletedStage.draw();
 
 
         // draw HUD

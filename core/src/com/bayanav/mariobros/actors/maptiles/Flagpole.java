@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bayanav.mariobros.actors.Collider;
+import com.bayanav.mariobros.actors.Mario;
 import com.bayanav.mariobros.manager.GameManager;
 import com.bayanav.mariobros.screens.PlayScreen;
 

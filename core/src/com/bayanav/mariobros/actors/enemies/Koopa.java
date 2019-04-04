@@ -68,7 +68,7 @@ public class Koopa extends Enemy {
         awaking = new Animation(0.2f, keyFrames);
 
         setSize(16 / GameManager.PPM, 32 / GameManager.PPM);
-        setRegion(walking.getKeyFrame(0.1f, true));
+        setRegion((TextureRegion) walking.getKeyFrame(0.1f, true));
 
         movingRight = false;
         speed = 3.2f;
@@ -226,7 +226,7 @@ public class Koopa extends Enemy {
 
         switch (currentState) {
             case WALKING:
-                setRegion(walking.getKeyFrame(stateTime, true));
+                setRegion((TextureRegion) walking.getKeyFrame(stateTime, true));
                 checkMovingDirection();
 
                 float velocityY = body.getLinearVelocity().y;
@@ -250,7 +250,7 @@ public class Koopa extends Enemy {
                 break;
 
             case AWAKING:
-                setRegion(awaking.getKeyFrame(stateTime, true));
+                setRegion((TextureRegion) awaking.getKeyFrame(stateTime, true));
                 if (stateTime > 2.0f) {
                     walk = true;
                 }
