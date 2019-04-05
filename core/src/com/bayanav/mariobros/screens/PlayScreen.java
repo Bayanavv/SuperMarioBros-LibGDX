@@ -56,7 +56,10 @@ import com.bayanav.mariobros.utils.WorldCreator;
 
 import java.util.LinkedList;
 
+
+
 public class PlayScreen implements Screen {
+
     private MarioBros game;
 
     public World world;
@@ -94,7 +97,7 @@ public class PlayScreen implements Screen {
 
     private Mario mario;
 
-    private Hub hub;
+    private Hub hud;
     private ScoreIndicator scoreIndicator;
 
     private boolean playingHurryMusic;
@@ -107,8 +110,6 @@ public class PlayScreen implements Screen {
     private boolean flagpoleMusicPlay = false;
     private boolean levelCompletedMusicPlay = false;
 
-
-    //Constructor:
     public PlayScreen(MarioBros game) {
         this.game = game;
     }
@@ -126,7 +127,6 @@ public class PlayScreen implements Screen {
         // create Box2D world
         world = new World(GameManager.GRAVITY, true);
         world.setContactListener(new WorldContactListener());
-        //world.setContactListener(new WorldContactListener());
 
         // load tmx tiled map
         TmxMapLoader tmxMapLoader = new TmxMapLoader();
@@ -156,8 +156,8 @@ public class PlayScreen implements Screen {
         fireballSpawnQueue = new LinkedList<SpawningFireball>();
 
 
-        hub = new Hub(game.batch);
-        hub.setLevel("1-1");
+        hud = new Hub(game.batch);
+        hud.setLevel("1-1");
 
         scoreIndicator = new ScoreIndicator(this, game.batch);
 
@@ -189,7 +189,6 @@ public class PlayScreen implements Screen {
                 game.setScreen(new GameOverScreen(game));
                 dispose();
             }
-
         });
         levelCompletedStage.addAction(new SequenceAction(new DelayAction(8.0f), setLevelCompletedScreen));
 
@@ -206,6 +205,13 @@ public class PlayScreen implements Screen {
     public float getMapWidth() {
         return mapWidth;
     }
+
+    /* currently not used
+    public float getMapHeight() {
+        return mapHeight;
+    }
+    */
+
     public OrthographicCamera getCamera() {
         return camera;
     }
@@ -270,8 +276,9 @@ public class PlayScreen implements Screen {
         }
     }
 
-    //the key moving of Mario
-    public void handleInput(){
+    public void handleInput() {
+
+        // press M to pause / play music
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             if (GameManager.instance.isPlayingMusic()) {
                 GameManager.instance.pauseMusic();
@@ -290,7 +297,7 @@ public class PlayScreen implements Screen {
 
         // Press F to toggle show FPS
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-            hub.setShowFPS(!hub.isShowFPS());
+            hud.setShowFPS(!hud.isShowFPS());
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT_BRACKET)) {
@@ -306,7 +313,47 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.EQUALS)) {
             GameManager.setTimeScale(1.0f);
         }
+    }
 
+    public void handleMusic() {
+        if (!playMusic) {
+            return;
+        }
+
+        if (mario.isDead()) {
+            GameManager.instance.stopMusic();
+        }
+        else if (levelCompleted) {
+            if (!flagpoleMusicPlay) {
+                GameManager.instance.playMusic("flagpole.ogg", false);
+                flagpoleMusicPlay = true;
+            }
+            else if (!GameManager.instance.isPlayingMusic("flagpole.ogg")) {
+                if (!levelCompletedMusicPlay) {
+                    GameManager.instance.playMusic("stage_clear.ogg", false);
+                    levelCompletedMusicPlay = true;
+                }
+            }
+        }
+        else {
+            if (mario.isInvincible()) {
+                GameManager.instance.playMusic("invincible.ogg", true);
+            }
+            else if (hud.getTimeLeft() < 60) {
+                if (!playingHurryMusic) {
+                    GameManager.instance.playMusic("out_of_time.ogg", false);
+                    playingHurryMusic = true;
+                }
+                else {
+                    if (!GameManager.instance.isPlayingMusic("out_of_time.ogg")) {
+                        GameManager.instance.playMusic("mario_music_hurry.ogg");
+                    }
+                }
+            }
+            else {
+                GameManager.instance.playMusic("mario_music.ogg");
+            }
+        }
     }
 
     public void update(float delta) {
@@ -314,12 +361,12 @@ public class PlayScreen implements Screen {
         float step = GameManager.STEP * GameManager.timeScale;
 
         handleInput();
-        //handleSpawningItem();
-        //handleSpawningEffect();
-        //handleSpawningFireball();
-        //handleMusic();
+        handleSpawningItem();
+        handleSpawningEffect();
+        handleSpawningFireball();
+        handleMusic();
 
-        if (hub.getTimeLeft() == 0) {
+        if (hud.getTimeLeft() == 0) {
             mario.suddenDeath();
         }
 
@@ -377,14 +424,14 @@ public class PlayScreen implements Screen {
         scoreIndicator.update(delta);
 
         // update HUD
-        hub.update(delta);
+        hud.update(delta);
 
         // update levelCompletedStage
         if (levelCompleted) {
             levelCompletedStage.act(delta);
         }
 
-        //cleanUpDestroyedObjects();
+        cleanUpDestroyedObjects();
 
 
         // check if Mario is dead
@@ -399,55 +446,14 @@ public class PlayScreen implements Screen {
         }
     }
 
-    public void handleMusic() {
-        if (!playMusic) {
-            return;
-        }
-
-        if (mario.isDead()) {
-            GameManager.instance.stopMusic();
-        }
-        else if (levelCompleted) {
-            if (!flagpoleMusicPlay) {
-                GameManager.instance.playMusic("flagpole.ogg", false);
-                flagpoleMusicPlay = true;
-            }
-            else if (!GameManager.instance.isPlayingMusic("flagpole.ogg")) {
-                if (!levelCompletedMusicPlay) {
-                    GameManager.instance.playMusic("stage_clear.ogg", false);
-                    levelCompletedMusicPlay = true;
-                }
-            }
-        }
-        else {
-            if (mario.isInvincible()) {
-                GameManager.instance.playMusic("invincible.ogg", true);
-            }
-            else if (hub.getTimeLeft() < 60) {
-                if (!playingHurryMusic) {
-                    GameManager.instance.playMusic("out_of_time.ogg", false);
-                    playingHurryMusic = true;
-                }
-                else {
-                    if (!GameManager.instance.isPlayingMusic("out_of_time.ogg")) {
-                        GameManager.instance.playMusic("mario_music_hurry.ogg");
-                    }
-                }
-            }
-            else {
-                GameManager.instance.playMusic("mario_music.ogg");
-            }
-        }
-    }
-
     private void cleanUpDestroyedObjects() {
-
+        /*
         for (int i = 0; i < mapTileObjects.size; i++) {
             if (mapTileObjects.get(i).isDestroyed()) {
                 mapTileObjects.removeIndex(i);
             }
         }
-
+        */
 
         for (int i = 0; i < items.size; i++) {
             if (items.get(i).isDestroyed()) {
@@ -502,15 +508,16 @@ public class PlayScreen implements Screen {
         }
 
         // draw enemies
-        for (Enemy enemy : enemies)
+        for (Enemy enemy : enemies) {
             enemy.draw(game.batch);
+        }
 
         // draw fireballs
         for (Fireball fireball : fireballs) {
             fireball.draw(game.batch);
         }
 
-        //draw Mario
+        // draw Mario
         mario.draw(game.batch);
 
         game.batch.end();
@@ -520,8 +527,7 @@ public class PlayScreen implements Screen {
 
 
         // draw HUD
-        hub.draw();
-
+        hud.draw();
 
         if (renderB2DDebug) {
             box2DDebugRenderer.render(world, camera.combined);
@@ -532,12 +538,8 @@ public class PlayScreen implements Screen {
     }
 
     @Override
-    // when the screen size changes the viewPort gets adjusted to know what the actual screen size is
     public void resize(int width, int height) {
-
-        //updated our game viewPort
-        viewport.update(width,height);
-
+        viewport.update(width, height);
     }
 
     @Override
@@ -557,7 +559,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-        hub.dispose();
+        hud.dispose();
         scoreIndicator.dispose();
         tiledMap.dispose();
         world.dispose();
